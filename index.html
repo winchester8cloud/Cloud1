@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Waggl.ly Homepage</title>
+<link rel="stylesheet" href="css_assignment.css"> 
+</head>
+<body>
+
+<h1 style="text-align: center;"> Wagg.ly </h1>
+
+<p style="text-align: center; font-family:verdana;"> The premium dog walking site, for owners and walkers alike! </p>
+
+<img class="circular_image" src="beach1.JPEG" class="center">
+
+<table style="text-align: center;" class="centerTable" cellpadding="10">
+    <tr>
+      <th style="text-align: center; font-family:verdana;">Dog walkers</th>
+      <th></th>
+      <th style="text-align: center; font-family:verdana;">Dog owners</th>
+    </tr>
+    <tr>
+        <form method="POST" id="dogWalker" action="https://function-app-cloud-assignment.azurewebsites.net/api/dogwalkers">
+      <td><label style="text-align: center; font-family:verdana;">Your name:</label> 
+        <input type="text" name="yourname" id="yourname" placeholder="Your name here..."> <br>
+        <label style="text-align: center; font-family:verdana;">Email:</label> 
+        <input type="text" name="email" id="email" placeholder="Your email here..."> <br>
+        <label style="text-align: center; font-family:verdana;">Town:</label> 
+        <input type="text" name="town" id="town" placeholder="Your town here..."> <br>
+        <label style="text-align: center; font-family:verdana;">Post code:</label> 
+        <input type="text" name="postcode" id="postcode" placeholder="Your post code here..."> <br> <br> <br>
+        <button type="clear" style="text-align: center; font-family:verdana;">Clear</button> <br> <br>
+        <button type="submit" style="text-align: center; font-family:verdana;" class="registerButtonDogWalker">Register</button>
+    </form>
+    <text style="text-align: center; font-family:verdana;" id="message-back"></text>
+    <td></td>
+        <form method="POST" id="dogOwner" action="https://function-app-cloud-assignment.azurewebsites.net/api/dogwalkers">
+      <td><label style="text-align: center; font-family:verdana;">Your name:</label> 
+        <input type="text" name="yourname" placeholder="Your name here..."> 
+        <br> <label style="text-align: center; font-family:verdana;">Your dogs name:</label>
+        <input type="text" name="dogsname" placeholder="Your dogs name..."> <br>
+        <label style="text-align: center; font-family:verdana;">Email:</label> 
+        <input type="text" name="email" placeholder="Your email here..."> <br>
+        <label style="text-align: center; font-family:verdana;">Town:</label> 
+        <input type="text" name="town" placeholder="Your town here..."> <br>
+        <label style="text-align: center; font-family:verdana;">Post code:</label> 
+        <input type="text" name="postcode" placeholder="Your post code here..."> <br> <br>
+        <button type="clear" style="text-align: center; font-family:verdana;">Clear</button> <br> <br>
+        <button type="submit" style="text-align: center; font-family:verdana;" class="registerButtonDogOwner">Register</button>
+    </form>
+    </tr>
+  </table>
+
+</body>
+</html>
