@@ -1,0 +1,11 @@
+{
+  "disabledFunctions": [],
+  "scriptRoot": ".",
+  "functions": {
+    "dogWalkers": {
+      "script": "dogWalkers/dogWalkers.js",
+      "bindings": [
+      ]
+    }
+  }
+}
