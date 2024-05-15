@@ -9,24 +9,6 @@ const config = {
   database: 'waggly',
 };
 
-const insertWalker = async (request) => { 
-  try { 
-    const pool = await sql.connect(config); 
-    const result = await pool.request() 
-      .input('yourname', sql.NVarChar, request.yourname) 
-      .input('email', sql.NVarChar, request.email) 
-      .input('town', sql.NVarChar, request.town) 
-      .input('postcode', sql.NVarChar, reuqest.postcode)
-      .query('INSERT INTO [dbo].[dogWalkers] (yourname, email, town, postcode) VALUES (@yourname, @email, @town. @postcode);'); 
-    console.log("Your Dog Walker ID is: ", result.recordset[0].id); 
-
-    return { body: `Hello, ${yourname}, we've recieved your request, your dog walker ID is, ${result.recordset[0].id} !` };
-
-  } catch (err) { 
-    console.log("Error inserting information for dog walker, try again: ", err); 
-  } 
-}
-
 app.http('dogWalkers', {
   methods: ['GET', 'POST'],
   authLevel: 'anonymous',
@@ -44,14 +26,39 @@ app.http('dogWalkers', {
       const email = formData.get('email') || 'No email supplied';
       const town = formData.get('town') || 'No town supplied';
       const postcode = formData.get('postcode') || 'No postcode supplied';
-
-      return { body: `Hello, ${yourname}, we've recieved your request!` };
+      
     } else {
       // Handle GET requests differently if needed
       return { body: 'This function expects a dog walker submission request.' };
     }
   }
 });
+
+const insertWalker = async (data) => { 
+  try { 
+
+    const formData = new URLSearchParams(data);
+
+    const yourname = formData.get('yourname') || 'Null';
+    const email = formData.get('email') || 'Null';
+    const town = formData.get('town') || 'Null';
+    const postcode = formData.get('postcode') || 'Null';
+
+    const pool = await sql.connect(config); 
+    const result = await pool.request() 
+      .input('yourname', sql.NVarChar, request.yourname) 
+      .input('email', sql.NVarChar, request.email) 
+      .input('town', sql.NVarChar, request.town) 
+      .input('postcode', sql.NVarChar, reuqest.postcode)
+      .query('INSERT INTO [dbo].[dogWalkers] (yourname, email, town, postcode) VALUES (@yourname, @email, @town. @postcode);'); 
+    console.log("Your Dog Walker ID is: ", result.recordset[0].id); 
+
+    return { body: `Hello, ${yourname}, we've recieved your request, your dog walker ID is, ${result.recordset[0].id} !` };
+
+  } catch (err) { 
+    console.log("Error inserting information for dog walker, try again: ", err); 
+  } 
+}
 
 
 
