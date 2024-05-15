@@ -1,13 +1,28 @@
 const { app, output } = require('@azure/functions');
 const crypto = require('crypto');
+const mssql = require('mssql');
 
 const sendToSql = output.sql({
   commandText: 'dbo.ToDo',
   connectionStringSetting: 'SqlConnectionString',
 });
 
+const config = {
+  server: 'admin-waggly.database.windows.net',
+  user: 'server-admin-waggly',
+  password: 'Wag881!!',
+  database: 'waggly',
+  pool: { 
+    max: 100, 
+    min: 0, 
+    idleTimeoutMillis: 50000 
+
+  } 
+};
+
 app.http('dogWalkers', {
   methods: ['GET', 'POST'],
+  authLevel: 'anonymous',
   extraOutputs: [sendToSql],
   handler: async (request, context) => {
     context.log(`Http function processed request for url "${request.url}"`);
@@ -31,34 +46,24 @@ app.http('dogWalkers', {
         postcode 
       }; 
 
-      const datadogWalker = JSON.stringify([
+      const dogWalkerSql = JSON.stringify([
         {
           // create a random ID
-          id: crypto.randomUUID(),
+          Id: crypto.randomUUID(),
           name: yourname,
           email: email,
-          town: town, 
+          town: town,
           postcode: postcode
         },
       ]);
-
+      
       // Output to Database
-      context.extraOutputs.set(sendToSql, data);
-      return { body: 'Your information has been successfully submitted!' };
-
-    
-      //const response = await addWalkerToDB(dogWalker);
-      //return response;
+      context.extraOutputs.set(sendToSql, dogWalkerSql);
 
     } else {
       return { body: 'This function expects a dog walker submission request.' };
     }
   }
-});
-
-const sendToSql = output.sql({
-  commandText: 'dbo.dogWalkers',
-  connectionStringSetting: 'SqlConnectionString',
 });
  
 const addWalkerToDB = async (dogWalker) => { 
@@ -69,14 +74,19 @@ const addWalkerToDB = async (dogWalker) => {
       .input('email', sql.NVarChar, dogWalker.email) 
       .input('town', sql.NVarChar, dogWalker.town) 
       .input('postcode', sql.NVarChar, dogWalker.postcode) 
-      .query('INSERT INTO [dbo].[dogWalkers] (yourname, email, town, postcode) VALUES (@yourname, @email, @town, @postcode);'); 
-    //await addWalkerToDB(dogWalker);
-    return { body: 'Your information has been successfully submitted!' };
+      .input('id', result.recordset[0].id)
+      .query('INSERT INTO [dbo].[dogWalkers] (id, yourname, email, town, postcode) VALUES (@id, @yourname, @email, @town, @postcode);'); 
+    await addWalkerToDB(dogWalker);
+    return { body: 'Your information has been successful submitted!' };
   } catch (err) { 
     console.log(err); 
-    return { body: 'Your information has not been successfully submitted, please try again.' };
+    return { body: 'Your information has not been successful submitted, please try again' };
   } 
 }
+
+
+
+
 
 
 
