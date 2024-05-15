@@ -21,16 +21,24 @@ app.http('dogWalkers', {
     context.log(`Http function processed request for url "${request.url}"`);
 
     if (request.method === 'POST') {
-      // Access form data from request body (assuming string data)
+      // Data form
       const data = await request.text();
 
-      // Parse the data (assuming data is URL-encoded)
+      // Decode this
       const formData = new URLSearchParams(data);
 
       const yourname = formData.get('yourname') || 'No name supplied';
       const email = formData.get('email') || 'No email supplied';
       const town = formData.get('town') || 'No town supplied';
       const postcode = formData.get('postcode') || 'No postcode supplied';
+
+      // Create a dog walker object
+      const dogWalker = { yourname, email, town, postcode };
+
+      // Call function to add dog walker to database
+      const response = await addWalkerToDB(dogWalker);
+
+      return { body: 'Your information has been successful submitted!' };
 
     } else {
       // Handle GET requests differently if needed
@@ -39,31 +47,28 @@ app.http('dogWalkers', {
   }
 });
 
-const insertWalker = async (data) => { 
+const dogWalker = { 
+  yourname, 
+  email, 
+  town,
+  postcode 
+}; 
+
+const addWalkerToDB = async (dogWalker) => { 
   try { 
-
-    const formData = new URLSearchParams(data);
-
-    const yourname = formData.get('yourname') || 'Null';
-    const email = formData.get('email') || 'Null';
-    const town = formData.get('town') || 'Null';
-    const postcode = formData.get('postcode') || 'Null';
-
     const pool = await sql.connect(config); 
     const result = await pool.request() 
-      .input('yourname', sql.NVarChar, request.yourname) 
-      .input('email', sql.NVarChar, request.email) 
-      .input('town', sql.NVarChar, request.town) 
-      .input('postcode', sql.NVarChar, reuqest.postcode)
-      .query('INSERT INTO [dbo].[dogWalkers] (yourname, email, town, postcode) VALUES (@yourname, @email, @town. @postcode);'); 
-    console.log("Your Dog Walker ID is: ", result.recordset[0].id); 
-
-    return { body: `Hello, ${yourname}, we've recieved your request, your dog walker ID is, ${result.recordset[0].id} !` };
-
+      .input('yourname', sql.NVarChar, dogWalker.yourname) 
+      .input('email', sql.NVarChar, dogWalker.email) 
+      .input('town', sql.NVarChar, dogWalker.town) 
+      .input('postcode', sql.NVarChar, dogWalker.postcode) 
+      .input('id', result.recordset[0].id)
+      .query('INSERT INTO [dbo].[dogWalkers] (id, yourname, email, town, postcode) VALUES (@id, @yourname, @email, @town, @postcode);'); 
+    return { body: 'Your information has been successful submitted!' };
   } catch (err) { 
-    return { body: `Hello, ${yourname}, we didn't recieved your request, please try again!` };
+    console.log(err); 
   } 
-}
+} 
 
 
 
