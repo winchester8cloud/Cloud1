@@ -1,5 +1,6 @@
 const { app } = require('@azure/functions');
 const mssql = require('mssql');
+const crypto = require('crypto');
 
 const config = {
   server: 'admin-waggly.database.windows.net',
@@ -14,9 +15,15 @@ const config = {
   } 
 };
 
+const sendToSql = output.sql({
+  commandText: 'dbo.ToDo',
+  connectionStringSetting: 'SqlConnectionString',
+});
+
 app.http('dogWalkers', {
   methods: ['GET', 'POST'],
   authLevel: 'anonymous',
+  extraOutputs: [sendtoSql],
   handler: async (request, context) => {
     context.log(`Http function processed request for url "${request.url}"`);
 
@@ -39,9 +46,24 @@ app.http('dogWalkers', {
         postcode 
       }; 
 
+      const datadogWalker = JSON.stringify([
+        {
+          // create a random ID
+          Id: crypto.randomUUID(),
+          name: yourname,
+          email: email,
+          town: town, 
+          postcode: postcode
+        },
+      ]);
+
+      // Output to Database
+      context.extraOutputs.set(sendToSql, data);
+      return { body: 'Your information has been successfully submitted!' };
+
     
-      const response = await addWalkerToDB(dogWalker);
-      return response;
+      //const response = await addWalkerToDB(dogWalker);
+      //return response;
 
     } else {
       return { body: 'This function expects a dog walker submission request.' };
