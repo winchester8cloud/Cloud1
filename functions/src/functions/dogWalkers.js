@@ -20,6 +20,18 @@ const config = {
   }
 };
 
+const sqlConfig = { 
+  user: 'server-admin-waggly', 
+  password: 'Wag881!!', 
+  database: 'waggly', 
+  server: 'admin-waggly.database.windows.net', 
+  pool: { 
+    max: 10, 
+    min: 0, 
+    idleTimeoutMillis: 30000 
+  } 
+}; 
+
 app.http('dogWalkers', {
   methods: ['GET', 'POST'],
   authLevel: 'anonymous',
@@ -86,7 +98,7 @@ async function addWalkerToDatabase(name, email, town, postcode) {
 
 async function testConnection() {
   try {
-    const pool = await sql.connect(config);
+    const pool = await sql.connect(sqlConfig);
     console.log('Connection established successfully!');
     return { success: true };
     pool.close();

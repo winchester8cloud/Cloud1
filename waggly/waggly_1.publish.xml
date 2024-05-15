@@ -2,6 +2,7 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TargetDatabaseName>waggly</TargetDatabaseName>
+    <TargetConnectionString>Data Source=tcp:admin-waggly.database.windows.net,1433;Initial Catalog=waggly;Persist Security Info=False;User ID=server-admin-waggly;Password=******;Multiple Active Result Sets=False;Connect Timeout=30;Encrypt=True;Trust Server Certificate=False;Authentication=SqlPassword;Application Name=sqltools;Command Timeout=30</TargetConnectionString>
     <AllowIncompatiblePlatform>True</AllowIncompatiblePlatform>
     <DropPermissionsNotInSource>True</DropPermissionsNotInSource>
     <DropObjectsNotInSource>True</DropObjectsNotInSource>
