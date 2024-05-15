@@ -8,6 +8,17 @@
             "request": "attach",
             "port": 9229,
             "preLaunchTask": "func: host start"
+        },
+        {
+            "name": "Launch Program",
+            "program": "${workspaceFolder}/app.js",
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
         }
+
+
     ]
 }

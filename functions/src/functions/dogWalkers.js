@@ -21,54 +21,48 @@ const config = {
   }
 };
 
+const insertWalker = async (walker) => { 
+  try { 
+    const pool = await sql.connect(config); 
+    const result = await pool.request() 
+      .input('name', sql.NVarChar, walker.name) 
+      .input('email', sql.NVarChar, walker.email) 
+      .input('town', sql.NVarChar, walker.town) 
+      .input('postcode', sql.NVarChar, walker.postcode) 
+      .query('INSERT INTO [dbo].[dogWalkers] (name, email, town, postcode) VALUES (@name, @email, @town, @postcode);'); 
+    console.log("Inserted walker with ID: ", result.recordset[0].id); 
+  } catch (err) { 
+    console.log("Error inserting walker: ", err); 
+  } 
+} 
+
+ 
+
 app.http('dogWalkers', {
   methods: ['GET', 'POST'],
   authLevel: 'anonymous',
-  handler: async (request, context) => {
+  handler: async (req, context) => {
     context.log(`Http function processed request for url "${request.url}"`);
 
-    if (request.method === 'POST') {
-      // Data form
-      const data = await request.text();
+  const queryString = req.body; 
+  const params = new URLSearchParams(queryString); 
+  const name = params.get('name'); 
+  const email = params.get('email'); 
+  const town = params.get('town');
+  const postcode = params.get('postcode');  
 
-      // Decode this
-      const formData = new URLSearchParams(data);
 
-      const name = formData.get('name') || 'No name supplied';
-      const email = formData.get('email') || 'No email supplied';
-      const town = formData.get('town') || 'No town supplied';
-      const postcode = formData.get('postcode') || 'No postcode supplied';
+  const dogWalker = { 
 
-      const dogWalker = { 
-        name, 
-        email, 
-        town,
-        postcode 
-      }; 
+    name, 
+    email, 
+    town,
+    postcode 
+  }; 
 
-      const response = await addWalkerToDB(dogWalker);
-      return response;
-
-    } else {
-      return { body: 'This function expects a dog walker submission request.' };
-    }
-  }
-});
  
-const addWalkerToDB = async (dogWalker) => { 
-  try { 
-    var pool = await sql.connect(config); 
-    var result = await pool.request() 
-      .input('name', sql.NVarChar, dogWalker.name) 
-      .input('email', sql.NVarChar, dogWalker.email) 
-      .input('town', sql.NVarChar, dogWalker.town) 
-      .input('postcode', sql.NVarChar, dogWalker.postcode) 
-      .input('id', result.recordset[0].id)
-      .query('INSERT INTO [dbo].[dogWalkers] (id, name, email, town, postcode) VALUES (@id, @name, @email, @town, @postcode);'); 
-    await addWalkerToDB(dogWalker);
-    return { body: 'Your information has been successful submitted!' };
-  } catch (err) { 
-    console.log(err); 
-    return { body: 'Your information has not been successful submitted, please try again' };
-  } 
-}
+  await insertWalker(walker); 
+  context.res = { 
+    body: "Walker inserted." 
+  }; 
+}});
