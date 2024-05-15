@@ -66,17 +66,18 @@ app.http('dogWalkers', {
   }
 });
 
-const addWalkerToDatabase = async (infoWalker) => { 
-  try { 
+async function addWalkerToDatabase(name, email, town, postcode) {
+  try {
     const pool = await sql.connect(config); 
-    const result = await pool.request() 
-      .input('name', sql.NVarChar, infoWalker.name) 
-      .input('email', sql.NVarChar, infoWalker.email) 
-      .input('town', sql.NVarChar, infoWalker.town) 
-      .input('postcode', sql.NVarChar, infoWalker.postcode) 
-      .query('INSERT INTO [dbo].[dogWalkers] (name, email, town, postcode) VALUES (name, @email, @town, @postcode);'); 
-    return { body: 'Your information has been successfully submitted!' };
-  } catch (err) { 
-    return { body: 'Your information has not been successfully submitted, please try again!' };
-  } 
+    const result = await pool.request()
+      .input('name', sql.NVarChar, name)
+      .input('email', sql.NVarChar, email)
+      .input('town', sql.NVarChar, town)
+      .input('postcode', sql.NVarChar, postcode)
+      .query('INSERT INTO [dbo].[dogWalkers] (name, email, town, postcode) VALUES (@name, @email, @town, @postcode);');
+    return { success: true };
+  } catch (error) {
+    console.error('Error adding walker to database:', error);
+    return { success: false, error: error.message };
+  }
 }
