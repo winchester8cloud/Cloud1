@@ -42,7 +42,7 @@ app.http('dogWalkers', {
               const response = await addWalkerToDatabase(name, email, town, postcode);
               return { response };}
             catch {
-              return {"Database function didn't run."}
+              return {body: "Database function didn't run."};
             }
           }
 
