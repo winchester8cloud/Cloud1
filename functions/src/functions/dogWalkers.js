@@ -29,7 +29,7 @@ app.http('dogWalkers', {
 
       // Prepare SQL statement with parameters to prevent SQL injection
       // Get new ID
-      const pool = new sql.ConnectionPool(connectionString);
+      const pool = new sql.ConnectionPool(config);
       const result = await pool.query('SELECT TOP 1 [id] FROM [dbo].[dogWalkers] ORDER BY [id] DESC');
       latestId = result.recordset[0]?.[id];
       latestId = latestId + 1;
