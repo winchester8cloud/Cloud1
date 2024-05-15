@@ -24,26 +24,47 @@ app.http('dogWalkers', {
   methods: ['GET', 'POST'],
   authLevel: 'anonymous',
   handler: async (request, context) => {
-      context.log(`Http function processed request for url "${request.url}"`);
+    context.log(`Http function processed request for url "${request.url}"`);
 
-      if (request.method === 'POST') {
-      const name = request.query.get('name') || await request.text() || 'No name';
-      const email = request.query.get('email') || await request.text() || 'No email';
-      const town = request.query.get('town') || await request.text() || 'No town';
-      const postcode = request.query.get('postcode') || await request.text() || 'No postcode';
+    if (request.method === 'POST') {
+      let name, email, town, postcode;
 
-      const response = `Request recieved but not submitted into database, please try again.`
-
-      if (name || email || town || postcode)
-        {
-          const response = `Hello, ${name}!, response recieved and in database, thank you!`
+      if (request.headers['content-type'] === 'application/json') {
+        try {
+          const data = await request.json(); // Assuming JSON data for POST requests
+          name = data?.name;
+          email = data?.email;
+          town = data?.town;
+          postcode = data?.postcode;
+        } catch (error) {
+          console.error('Error parsing JSON request body:', error);
+          return {
+            body: 'Error processing request, please ensure data is in valid JSON format.'
+          };
         }
-
-      return { body: response };
+      } else {
+        // Handle form data parsing if needed (use request.query or FormData)
+        name = request.query?.get('name') || 'No name';
+        email = request.query?.get('email') || 'No email';
+        town = request.query?.get('town') || 'No town';
+        postcode = request.query?.get('postcode') || 'No postcode';
       }
+
+      // Database interaction (replace with your actual logic)
+      const databaseResponse = await addWalkerToDatabase(name, email, town, postcode);
+
+      if (databaseResponse.success) {
+        return { body: `Hello, ${name}!, information submitted successfully!` };
+      } else {
+        console.error('Error adding walker to database:', databaseResponse.error);
+        return { body: 'Error submitting information, please try again!' };
+      }
+    } else {
+      // Handle GET requests if needed
+      return { body: 'This endpoint only accepts POST requests for dog walker information.' };
     }
   }
-);
+});
 
 const addWalkerToDatabase = async (infoWalker) => { 
   try { 
