@@ -1,47 +1,42 @@
 const { app } = require('@azure/functions');
 const mssql = require('mssql');
 
-const config = {
-  // Replace with your actual SQL connection string details retrieved securely
-  server: 'waggly-assignment-server.database.windows.net',
-  user: 'admin-waggly',
-  password: 'gjrs4t4nSSfw!!',
-  database: 'waggly-server',
-};
-
 app.http('dogWalkers', {
   methods: ['GET', 'POST'],
   authLevel: 'anonymous',
-  handler: async (context, req) => {
+  handler: async (request, context) => {
     context.log(`Http function processed request for url "${request.url}"`);
 
-    if (req.method === 'POST') {
-      // ... (same logic as before to retrieve form data)
+    if (request.method === 'POST') {
+      // Access form data from request body (assuming string data)
+      const data = await request.text();
 
-      try {
-        // Establish connection pool using async/await
-        const pool = await mssql.connect(config);
+      // Parse the data (assuming data is URL-encoded)
+      const formData = new URLSearchParams(data);
 
-        const sql = `INSERT INTO dogWalkers (name, email, town, postcode) VALUES (@name, @email, @town, @postcode)`;
-        const request = await pool.request()
+      const yourname = formData.get('yourname') || 'No name supplied';
+      const email = formData.get('email') || 'No email supplied';
+      const town = formData.get('town') || 'No town supplied';
+      const postcode = formData.get('postcode') || 'No postcode supplied';
+
+      // Prepare SQL statement with parameters to prevent SQL injection
+      const sql = `INSERT INTO dogWalkers (name, email, town, postcode) VALUES (@name, @email, @town, @postcode)`;
+      const request = await pool.request()
         .input('name', yourname)
         .input('email', email)
         .input('town', town)
         .input('postcode', postcode);
 
-        // Execute the SQL statement
-        await request.query();
-        pool.close();
+      // Execute the SQL statement
+      await request.query();
 
+      pool.close();
 
-        return { body: `Hello, ${yourname}, your information has been submitted!` };
-      } catch (error) {
-        context.log.error('Error connecting to database:', error);
-        return { status: 500, body: 'An error occurred while processing your request.' };
-      }
+      return { body: `Hello, ${yourname}, we've recieved your request!` };
     } else {
       // Handle GET requests differently if needed
       return { body: 'This function expects a POST request.' };
     }
   }
 });
+
