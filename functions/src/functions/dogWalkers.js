@@ -30,8 +30,8 @@ app.http('dogWalkers', {
       // Prepare SQL statement with parameters to prevent SQL injection
       // Get new ID
       const pool = new sql.ConnectionPool(connectionString);
-      const result = await pool.query('SELECT TOP 1 [id_column_name] FROM [dbo].[dogWalkers] ORDER BY [id] DESC');
-      latestId = result.recordset[0]?.[id_column_name];
+      const result = await pool.query('SELECT TOP 1 [id] FROM [dbo].[dogWalkers] ORDER BY [id] DESC');
+      latestId = result.recordset[0]?.[id];
       latestId = latestId + 1;
 
       const sql = `INSERT INTO dogWalkers (id, name, email, town, postcode) VALUES (@id, @name, @email, @town, @postcode)`;
