@@ -1,92 +1,53 @@
 const { app, output } = require('@azure/functions');
 const crypto = require('crypto');
-const mssql = require('mssql');
 
 const sendToSql = output.sql({
-  commandText: 'dbo.ToDo',
+  commandText: 'dbo.dogWalkers',
   connectionStringSetting: 'SqlConnectionString',
 });
 
-const config = {
-  server: 'admin-waggly.database.windows.net',
-  user: 'server-admin-waggly',
-  password: 'Wag881!!',
-  database: 'waggly',
-  pool: { 
-    max: 100, 
-    min: 0, 
-    idleTimeoutMillis: 50000 
-
-  } 
-};
-
 app.http('dogWalkers', {
   methods: ['GET', 'POST'],
-  authLevel: 'anonymous',
   extraOutputs: [sendToSql],
   handler: async (request, context) => {
-    context.log(`Http function processed request for url "${request.url}"`);
+    try {
+      context.log(`Http function processed request for url "${request.url}"`);
 
-    if (request.method === 'POST') {
-      // Data form
-      const data = await request.text();
+      const yourname = request.query.get('yourname') || (await request.text());
+      const email = request.query.get('email') || (await request.text());
+      const town = request.query.get('town') || (await request.text());
+      const postcode = request.query.get('postcode') || (await request.text());
 
-      // Decode this
-      const formData = new URLSearchParams(data);
+      if (!yourname) {
+        return { status: 404, body: 'Missing required data' };
+      }
 
-      const yourname = formData.get('yourname') || 'No name supplied';
-      const email = formData.get('email') || 'No email supplied';
-      const town = formData.get('town') || 'No town supplied';
-      const postcode = formData.get('postcode') || 'No postcode supplied';
-
-      const dogWalker = { 
-        yourname, 
-        email, 
-        town,
-        postcode 
-      }; 
-
-      const dogWalkerSql = JSON.stringify([
+      // Stringified array of objects to be inserted into the database
+      const data = JSON.stringify([
         {
           // create a random ID
-          Id: crypto.randomUUID(),
+          id: crypto.randomUUID(),
           name: yourname,
           email: email,
           town: town,
           postcode: postcode
         },
       ]);
-      
+
       // Output to Database
-      context.extraOutputs.set(sendToSql, dogWalkerSql);
+      context.extraOutputs.set(sendToSql, data);
 
-    } else {
-      return { body: 'This function expects a dog walker submission request.' };
+      const responseMessage = name
+        ? 'Hello, ' +
+          yourname +
+          '. This HTTP triggered function executed successfully.'
+        : 'This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.';
+
+      // Return to HTTP client
+      return { body: responseMessage };
+    } catch (error) {
+      context.log(`Error: ${error}`);
+      return { status: 500, body: 'Internal Server Error' };
     }
-  }
+  },
 });
- 
-const addWalkerToDB = async (dogWalker) => { 
-  try { 
-    const pool = await sql.connect(config); 
-    const result = await pool.request() 
-      .input('yourname', sql.NVarChar, dogWalker.yourname) 
-      .input('email', sql.NVarChar, dogWalker.email) 
-      .input('town', sql.NVarChar, dogWalker.town) 
-      .input('postcode', sql.NVarChar, dogWalker.postcode) 
-      .input('id', result.recordset[0].id)
-      .query('INSERT INTO [dbo].[dogWalkers] (id, yourname, email, town, postcode) VALUES (@id, @yourname, @email, @town, @postcode);'); 
-    await addWalkerToDB(dogWalker);
-    return { body: 'Your information has been successful submitted!' };
-  } catch (err) { 
-    console.log(err); 
-    return { body: 'Your information has not been successful submitted, please try again' };
-  } 
-}
-
-
-
-
-
-
-
