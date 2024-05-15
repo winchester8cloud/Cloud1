@@ -30,7 +30,7 @@ app.http('dogWalkers', {
       };
 
       // Prepare SQL statement with parameters to prevent SQL injection
-      const sql = `INSERT INTO YourTable (name, email, town, postcode) VALUES (@name, @email, @town, @postcode)`;
+      const sql = `INSERT INTO dogWalkers (name, email, town, postcode) VALUES (@name, @email, @town, @postcode)`;
       const request = await pool.request()
         .input('name', yourname)
         .input('email', email)
