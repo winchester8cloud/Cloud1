@@ -26,8 +26,13 @@ app.http('dogWalkers', {
     handler: async (request, context) => {
         context.log(`Http function processed request for url "${request.url}"`);
 
+        const formData = new FormData(request);
+        const name = formData.get('name');
+        const email = formData.get('email');
+        const town = formData.get('town');
+        const postcode = formData.get('postcode');
+
         if (req.method === 'POST') {
-          const infoWalker = req.body;
       
           //if (infoWalker) {
             //try {
@@ -39,8 +44,9 @@ app.http('dogWalkers', {
             //}
           //}
 
-          return {body: `No information passed, ${infoWalker.name}!`};
+          return {body: `No information passed, ${name}!`};
     }
+    return {body: `No information passed, ${name}!`};
 }});
 
 const addWalkerToDatabase = async (infoWalker) => { 
