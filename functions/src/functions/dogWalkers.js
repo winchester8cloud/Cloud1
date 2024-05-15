@@ -26,6 +26,7 @@ app.http('dogWalkers', {
   handler: async (request, context) => {
       context.log(`Http function processed request for url "${request.url}"`);
 
+      if (request.method === 'POST') {
       const name = request.query.get('name') || await request.text() || 'No name';
       const email = request.query.get('email') || await request.text() || 'No email';
       const town = request.query.get('town') || await request.text() || 'No town';
@@ -38,9 +39,11 @@ app.http('dogWalkers', {
           const response = `Hello, ${name}!, response recieved and in database, thank you!`
         }
 
-        return { body: response };
+      return { body: response };
+      }
+    }
   }
-});
+);
 
 const addWalkerToDatabase = async (infoWalker) => { 
   try { 
