@@ -1,5 +1,4 @@
 const { app } = require('@azure/functions');
-const mssql = require('mssql');
 
 app.http('dogWalkers', {
   methods: ['GET', 'POST'],
