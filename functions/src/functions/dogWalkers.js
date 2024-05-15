@@ -9,6 +9,24 @@ const config = {
   database: 'waggly',
 };
 
+const insertWalker = async (request) => { 
+  try { 
+    const pool = await sql.connect(config); 
+    const result = await pool.request() 
+      .input('yourname', sql.NVarChar, request.yourname) 
+      .input('email', sql.NVarChar, request.email) 
+      .input('town', sql.NVarChar, request.town) 
+      .input('postcode', sql.NVarChar, reuqest.postcode)
+      .query('INSERT INTO [dbo].[dogWalkers] (yourname, email, town, postcode) VALUES (@yourname, @email, @town. @postcode);'); 
+    console.log("Your Dog Walker ID is: ", result.recordset[0].id); 
+
+    return { body: `Hello, ${yourname}, we've recieved your request, your dog walker ID is, ${result.recordset[0].id} !` };
+
+  } catch (err) { 
+    console.log("Error inserting information for dog walker, try again: ", err); 
+  } 
+}
+
 app.http('dogWalkers', {
   methods: ['GET', 'POST'],
   authLevel: 'anonymous',
@@ -35,19 +53,5 @@ app.http('dogWalkers', {
   }
 });
 
-const insertWalker = async (request) => { 
-  try { 
-    const pool = await sql.connect(config); 
-    const result = await pool.request() 
-      .input('yourname', sql.NVarChar, request.yourname) 
-      .input('email', sql.NVarChar, request.email) 
-      .input('town', sql.NVarChar, request.town) 
-      .input('postcode', sql.NVarChar, reuqest.postcode)
-      .query('INSERT INTO [dbo].[dogWalkers] (yourname, email, town, postcode) VALUES (@yourname, @email, @town. @postcode);'); 
-    console.log("Your Dog Walker ID is: ", result.recordset[0].id); 
 
-  } catch (err) { 
-    console.log("Error inserting information for dog walker, try again: ", err); 
-  } 
-}
 
