@@ -1,9 +1,11 @@
-CREATE TABLE [dbo].[dogOwners]
-(
-  [Id] INT NOT NULL PRIMARY KEY,
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[dogOwners]'))
+BEGIN
+  CREATE TABLE [dbo].[dogOwners] (
+    [Id] INT NOT NULL PRIMARY KEY,
   [NAME] NCHAR(100),
   [DOGNAME] NCHAR(100),
   [EMAIL] NCHAR(100),
   [TOWN] NCHAR(100),
   [POSTCODE] NCHAR(100)
-)
+  );
+END;

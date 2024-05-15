@@ -28,7 +28,13 @@ app.http('dogWalkers', {
       const postcode = formData.get('postcode') || 'No postcode supplied';
 
       // Prepare SQL statement with parameters to prevent SQL injection
-      const sql = `INSERT INTO dogWalkers (name, email, town, postcode) VALUES (@name, @email, @town, @postcode)`;
+      // Get new ID
+      const pool = new sql.ConnectionPool(connectionString);
+      const result = await pool.query('SELECT TOP 1 [id_column_name] FROM [schema_name].[table_name] ORDER BY [id_column_name] DESC');
+      latestId = result.recordset[0]?.[id_column_name];
+      latestId = latestId + 1;
+
+      const sql = `INSERT INTO dogWalkers (id, name, email, town, postcode) VALUES (@name, @email, @town, @postcode @latestId)`;
       const request = await pool.request()
         .input('name', yourname)
         .input('email', email)
