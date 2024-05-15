@@ -39,6 +39,10 @@ app.http('dogWalkers', {
         postcode 
       }; 
 
+    
+      const response = await addWalkerToDB(dogWalker);
+      return response;
+
     } else {
       return { body: 'This function expects a dog walker submission request.' };
     }
