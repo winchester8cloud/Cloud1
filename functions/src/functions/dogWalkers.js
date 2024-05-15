@@ -21,33 +21,19 @@ const config = {
 };
 
 app.http('dogWalkers', {
-    methods: ['GET', 'POST'],
-    authLevel: 'anonymous',
-    handler: async (request, context) => {
-        context.log(`Http function processed request for url "${request.url}"`);
+  methods: ['GET', 'POST'],
+  authLevel: 'anonymous',
+  handler: async (request, context) => {
+      context.log(`Http function processed request for url "${request.url}"`);
 
-        const formData = new FormData(request);
-        const name = formData.get('name');
-        const email = formData.get('email');
-        const town = formData.get('town');
-        const postcode = formData.get('postcode');
+      const name = request.query.get('name') || await request.text() || 'No name';
+      const email = request.query.get('email') || await request.text() || 'No email';
+      const town = request.query.get('town') || await request.text() || 'No town';
+      const postcode = request.query.get('postcode') || await request.text() || 'No postcode';
 
-        if (req.method === 'POST') {
-      
-          //if (infoWalker) {
-            //try {
-              // To DB
-              //const response = await addWalkerToDatabase(infoWalker);
-              //return { response };}
-            //catch {
-              //return {body: "Database function didn't run."};
-            //}
-          //}
-
-          return {body: `No information passed, ${name}!`};
-    }
-    return {body: `No information passed, ${name}!`};
-}});
+      return { body: `Hello, ${name}!` };
+  }
+});
 
 const addWalkerToDatabase = async (infoWalker) => { 
   try { 
