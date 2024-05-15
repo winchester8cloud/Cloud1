@@ -32,6 +32,30 @@ app.http('dogWalkers', {
       const town = formData.get('town') || 'No town supplied';
       const postcode = formData.get('postcode') || 'No postcode supplied';
 
+      const dogWalker = { 
+        yourname, 
+        email, 
+        town,
+        postcode 
+      }; 
+      
+      await addWalkerToDB(dogWalker);
+      const addWalkerToDB = async (dogWalker) => { 
+        try { 
+          const pool = await sql.connect(config); 
+          const result = await pool.request() 
+            .input('yourname', sql.NVarChar, dogWalker.yourname) 
+            .input('email', sql.NVarChar, dogWalker.email) 
+            .input('town', sql.NVarChar, dogWalker.town) 
+            .input('postcode', sql.NVarChar, dogWalker.postcode) 
+            .input('id', result.recordset[0].id)
+            .query('INSERT INTO [dbo].[dogWalkers] (id, yourname, email, town, postcode) VALUES (@id, @yourname, @email, @town, @postcode);'); 
+          return { body: 'Your information has been successful submitted!' };
+        } catch (err) { 
+          console.log(err); 
+        } 
+      }
+
       return { body: 'Your information has been successful submitted!' };
 
     } else {
@@ -40,30 +64,7 @@ app.http('dogWalkers', {
     }
   }
 });
-
-const dogWalker = { 
-  yourname, 
-  email, 
-  town,
-  postcode 
-}; 
-
-await addWalkerToDB(dogWalker);
-const addWalkerToDB = async (dogWalker) => { 
-  try { 
-    const pool = await sql.connect(config); 
-    const result = await pool.request() 
-      .input('yourname', sql.NVarChar, dogWalker.yourname) 
-      .input('email', sql.NVarChar, dogWalker.email) 
-      .input('town', sql.NVarChar, dogWalker.town) 
-      .input('postcode', sql.NVarChar, dogWalker.postcode) 
-      .input('id', result.recordset[0].id)
-      .query('INSERT INTO [dbo].[dogWalkers] (id, yourname, email, town, postcode) VALUES (@id, @yourname, @email, @town, @postcode);'); 
-    return { body: 'Your information has been successful submitted!' };
-  } catch (err) { 
-    console.log(err); 
-  } 
-} 
+ 
 
 
 
