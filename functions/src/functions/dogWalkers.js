@@ -49,15 +49,13 @@ app.http('dogWalkers', {
             .input('postcode', sql.NVarChar, dogWalker.postcode) 
             .input('id', result.recordset[0].id)
             .query('INSERT INTO [dbo].[dogWalkers] (id, yourname, email, town, postcode) VALUES (@id, @yourname, @email, @town, @postcode);'); 
+          await addWalkerToDB(dogWalker);
           return { body: 'Your information has been successful submitted!' };
         } catch (err) { 
           console.log(err); 
+          return { body: 'Your information has not been successful submitted, please try again' };
         } 
       }
-
-      await addWalkerToDB(dogWalker);
-
-      return { body: 'Your information has been successful submitted!' };
 
     } else {
       return { body: 'This function expects a dog walker submission request.' };
