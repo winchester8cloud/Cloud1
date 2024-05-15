@@ -1,53 +1,69 @@
 const { app, output } = require('@azure/functions');
 const crypto = require('crypto');
+const mssql = require('mssql');
 
-const sendToSql = output.sql({
-  commandText: 'dbo.dogWalkers',
-  connectionStringSetting: 'SqlConnectionString',
-});
+const config = {
+  server: 'admin-waggly.database.windows.net',
+  user: 'server-admin-waggly',
+  password: 'Wag881!!',
+  database: 'waggly',
+  pool: { 
+    max: 100, 
+    min: 0, 
+    idleTimeoutMillis: 50000 
+
+  } 
+};
 
 app.http('dogWalkers', {
   methods: ['GET', 'POST'],
+  authLevel: 'anonymous',
   extraOutputs: [sendToSql],
   handler: async (request, context) => {
-    try {
-      context.log(`Http function processed request for url "${request.url}"`);
+    context.log(`Http function processed request for url "${request.url}"`);
 
-      const yourname = request.query.get('yourname') || (await request.text());
-      const email = request.query.get('email') || (await request.text());
-      const town = request.query.get('town') || (await request.text());
-      const postcode = request.query.get('postcode') || (await request.text());
+    if (request.method === 'POST') {
+      // Data form
+      const data = await request.text();
 
-      if (!yourname) {
-        return { status: 404, body: 'Missing required data' };
-      }
+      // Decode this
+      const formData = new URLSearchParams(data);
 
-      // Stringified array of objects to be inserted into the database
-      const data = JSON.stringify([
-        {
-          // create a random ID
-          id: crypto.randomUUID(),
-          name: yourname,
-          email: email,
-          town: town,
-          postcode: postcode
-        },
-      ]);
+      const name = formData.get('name') || 'No name supplied';
+      const email = formData.get('email') || 'No email supplied';
+      const town = formData.get('town') || 'No town supplied';
+      const postcode = formData.get('postcode') || 'No postcode supplied';
 
-      // Output to Database
-      context.extraOutputs.set(sendToSql, data);
+      const dogWalker = { 
+        name, 
+        email, 
+        town,
+        postcode 
+      }; 
 
-      const responseMessage = name
-        ? 'Hello, ' +
-          yourname +
-          '. This HTTP triggered function executed successfully.'
-        : 'This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.';
+      const response = await addWalkerToDB(dogWalker);
+      return response;
 
-      // Return to HTTP client
-      return { body: responseMessage };
-    } catch (error) {
-      context.log(`Error: ${error}`);
-      return { status: 500, body: 'Internal Server Error' };
+    } else {
+      return { body: 'This function expects a dog walker submission request.' };
     }
-  },
+  }
 });
+ 
+const addWalkerToDB = async (dogWalker) => { 
+  try { 
+    const pool = await sql.connect(config); 
+    const result = await pool.request() 
+      .input('name', sql.NVarChar, dogWalker.name) 
+      .input('email', sql.NVarChar, dogWalker.email) 
+      .input('town', sql.NVarChar, dogWalker.town) 
+      .input('postcode', sql.NVarChar, dogWalker.postcode) 
+      .input('id', result.recordset[0].id)
+      .query('INSERT INTO [dbo].[dogWalkers] (id, name, email, town, postcode) VALUES (@id, @name, @email, @town, @postcode);'); 
+    await addWalkerToDB(dogWalker);
+    return { body: 'Your information has been successful submitted!' };
+  } catch (err) { 
+    console.log(err); 
+    return { body: 'Your information has not been successful submitted, please try again' };
+  } 
+}
