@@ -27,33 +27,27 @@ app.http('dogWalkers', {
       const town = formData.get('town') || 'No town supplied';
       const postcode = formData.get('postcode') || 'No postcode supplied';
 
-      // Prepare SQL statement with parameters to prevent SQL injection
-      // Get new ID
-      const pool = new sql.ConnectionPool(config);
-      const result = await pool.query('SELECT TOP 1 [id] FROM [dbo].[dogWalkers] ORDER BY [id] DESC');
-      latestId = result.recordset[0]?.[id];
-      latestId = latestId + 1;
-
-      const sql = `INSERT INTO dogWalkers (id, name, email, town, postcode) VALUES (@id, @name, @email, @town, @postcode)`;
-      const request = await pool.request()
-        .input('id', latestId)
-        .input('name', yourname)
-        .input('email', email)
-        .input('town', town)
-        .input('postcode', postcode);
-
-      // Execute the SQL statement
-      await request.query();
-
-      pool.close();
-
       return { body: `Hello, ${yourname}, we've recieved your request!` };
     } else {
       // Handle GET requests differently if needed
-      return { body: 'This function expects a POST request.' };
+      return { body: 'This function expects a dog walker submission request.' };
     }
   }
 });
 
+const insertWalker = async (request) => { 
+  try { 
+    const pool = await sql.connect(config); 
+    const result = await pool.request() 
+      .input('yourname', sql.NVarChar, request.yourname) 
+      .input('email', sql.NVarChar, request.email) 
+      .input('town', sql.NVarChar, request.town) 
+      .input('postcode', sql.NVarChar, reuqest.postcode)
+      .query('INSERT INTO [dbo].[dogWalkers] (yourname, email, town, postcode) VALUES (@yourname, @email, @town. @postcode);'); 
+    console.log("Your Dog Walker ID is: ", result.recordset[0].id); 
 
+  } catch (err) { 
+    console.log("Error inserting information for dog walker, try again: ", err); 
+  } 
+}
 
