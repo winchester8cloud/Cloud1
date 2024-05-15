@@ -15,10 +15,7 @@ const config = {
   } 
 };
 
-const sendToSql = output.sql({
-  commandText: 'dbo.ToDo',
-  connectionStringSetting: 'SqlConnectionString',
-});
+
 
 app.http('dogWalkers', {
   methods: ['GET', 'POST'],
@@ -49,7 +46,7 @@ app.http('dogWalkers', {
       const datadogWalker = JSON.stringify([
         {
           // create a random ID
-          Id: crypto.randomUUID(),
+          id: crypto.randomUUID(),
           name: yourname,
           email: email,
           town: town, 
@@ -69,6 +66,11 @@ app.http('dogWalkers', {
       return { body: 'This function expects a dog walker submission request.' };
     }
   }
+});
+
+const sendToSql = output.sql({
+  commandText: 'dbo.dogWalkers',
+  connectionStringSetting: 'SqlConnectionString',
 });
  
 const addWalkerToDB = async (dogWalker) => { 
