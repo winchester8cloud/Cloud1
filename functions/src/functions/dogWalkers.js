@@ -1,5 +1,4 @@
 const { app, output } = require('@azure/functions');
-const crypto = require('crypto');
 const mssql = require('mssql');
 
 const config = {
@@ -28,16 +27,12 @@ app.http('dogWalkers', {
         context.log(`Http function processed request for url "${request.url}"`);
 
         if (req.method === 'POST') {
-          const body = req.body;
+          const infoWalker = req.body;
       
-          if (body) {
+          if (infoWalker) {
             try {
-              const { name, email, town, postcode } = body;
-      
-              // You might want to add data validation here
-      
-              // Replace with your actual database connection logic (e.g., using a SQL library)
-              const response = await addWalkerToDatabase(name, email, town, postcode);
+              // To DB
+              const response = await addWalkerToDatabase(infoWalker);
               return { response };}
             catch {
               return {body: "Database function didn't run."};
@@ -47,14 +42,14 @@ app.http('dogWalkers', {
     }
 }});
 
-const addWalkerToDatabase = async (name, email, town, postcode) => { 
+const addWalkerToDatabase = async (infoWalker) => { 
   try { 
     const pool = await sql.connect(config); 
     const result = await pool.request() 
-      .input('name', sql.NVarChar, name) 
-      .input('email', sql.NVarChar, email) 
-      .input('town', sql.NVarChar, town) 
-      .input('postcode', sql.NVarChar, postcode) 
+      .input('name', sql.NVarChar, infoWalker.name) 
+      .input('email', sql.NVarChar, infoWalker.email) 
+      .input('town', sql.NVarChar, infoWalker.town) 
+      .input('postcode', sql.NVarChar, infoWalker.postcode) 
       .query('INSERT INTO [dbo].[dogWalkers] (name, email, town, postcode) VALUES (name, @email, @town, @postcode);'); 
     return { body: 'Your information has been successfully submitted!' };
   } catch (err) { 
