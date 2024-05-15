@@ -2,11 +2,16 @@ const { app } = require('@azure/functions');
 const mssql = require('mssql');
 
 const config = {
-  // Replace with your actual SQL connection string details retrieved securely
   server: 'admin-waggly.database.windows.net',
   user: 'server-admin-waggly',
   password: 'Wag881!!',
   database: 'waggly',
+  pool: { 
+    max: 100, 
+    min: 0, 
+    idleTimeoutMillis: 50000 
+
+  } 
 };
 
 app.http('dogWalkers', {
@@ -26,7 +31,7 @@ app.http('dogWalkers', {
       const email = formData.get('email') || 'No email supplied';
       const town = formData.get('town') || 'No town supplied';
       const postcode = formData.get('postcode') || 'No postcode supplied';
-      
+
     } else {
       // Handle GET requests differently if needed
       return { body: 'This function expects a dog walker submission request.' };
@@ -56,7 +61,7 @@ const insertWalker = async (data) => {
     return { body: `Hello, ${yourname}, we've recieved your request, your dog walker ID is, ${result.recordset[0].id} !` };
 
   } catch (err) { 
-    console.log("Error inserting information for dog walker, try again: ", err); 
+    return { body: `Hello, ${yourname}, we didn't recieved your request, please try again!` };
   } 
 }
 
