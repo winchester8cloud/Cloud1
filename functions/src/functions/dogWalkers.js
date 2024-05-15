@@ -47,7 +47,7 @@ app.http('dogWalkers', {
           }
 
     }
-});
+}});
 
 const addWalkerToDatabase = async (name, email, town, postcode) => { 
   try { 
