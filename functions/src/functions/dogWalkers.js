@@ -39,6 +39,7 @@ app.http('dogWalkers', {
             }
           }
 
+          return {body: "No information passed."};
     }
 }});
 
