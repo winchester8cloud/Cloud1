@@ -32,12 +32,6 @@ app.http('dogWalkers', {
       const town = formData.get('town') || 'No town supplied';
       const postcode = formData.get('postcode') || 'No postcode supplied';
 
-      // Create a dog walker object
-      const dogWalker = { yourname, email, town, postcode };
-
-      // Call function to add dog walker to database
-      const response = await addWalkerToDB(dogWalker);
-
       return { body: 'Your information has been successful submitted!' };
 
     } else {
@@ -54,6 +48,7 @@ const dogWalker = {
   postcode 
 }; 
 
+await addWalkerToDB(dogWalker);
 const addWalkerToDB = async (dogWalker) => { 
   try { 
     const pool = await sql.connect(config); 
