@@ -18,11 +18,11 @@ def dogWalkersPython(req: func.HttpRequest, dogWalkerInfo: func.Out[func.SqlRow]
     if not name:
         try:
             req_body = req.get_json()
+            name = req_body.get('name')
         except ValueError:
             pass
-        else:
-            name = req_body.get('name')
 
+    #dogWalkerInfo.set(func.SqlRow({"name": name, "email": email, "town": town, "postcode": postcode}))
     if name:
         dogWalkerInfo.set(func.SqlRow({"name": name, "email": email, "town": town, "postcode": postcode}))
         return func.HttpResponse(f"Hello, {name}. You've been registered successfully!.")
