@@ -51,7 +51,9 @@ app.http('dogWalkers', {
       }
 
       // Database interaction (replace with your actual logic)
-      const databaseResponse = await addWalkerToDatabase(name, email, town, postcode);
+      //const databaseResponse = await addWalkerToDatabase(name, email, town, postcode);
+      const databaseResponse = await testConnection();
+      
 
       if (databaseResponse.success) {
         return { body: `Hello, ${name}!, information submitted successfully!` };
@@ -81,3 +83,16 @@ async function addWalkerToDatabase(name, email, town, postcode) {
     return { success: false, error: error.message };
   }
 }
+
+async function testConnection() {
+  try {
+    const pool = await sql.connect(config);
+    console.log('Connection established successfully!');
+    return { success: true };
+    pool.close();
+  } catch (error) {
+    console.error('Error connecting to database:', error);
+    return { success: false, error: error.message };
+  }
+}
+
