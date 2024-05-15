@@ -34,8 +34,9 @@ app.http('dogWalkers', {
       latestId = result.recordset[0]?.[id_column_name];
       latestId = latestId + 1;
 
-      const sql = `INSERT INTO dogWalkers (id, name, email, town, postcode) VALUES (@name, @email, @town, @postcode @latestId)`;
+      const sql = `INSERT INTO dogWalkers (id, name, email, town, postcode) VALUES (@id, @name, @email, @town, @postcode)`;
       const request = await pool.request()
+        .input('id', latestId)
         .input('name', yourname)
         .input('email', email)
         .input('town', town)
