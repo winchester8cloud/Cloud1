@@ -60,7 +60,6 @@ app.http('dogWalkers', {
       return { body: 'Your information has been successful submitted!' };
 
     } else {
-      // Handle GET requests differently if needed
       return { body: 'This function expects a dog walker submission request.' };
     }
   }
