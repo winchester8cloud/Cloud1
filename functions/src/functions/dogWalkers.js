@@ -57,13 +57,12 @@ const addWalkerToDB = async (dogWalker) => {
       .input('email', sql.NVarChar, dogWalker.email) 
       .input('town', sql.NVarChar, dogWalker.town) 
       .input('postcode', sql.NVarChar, dogWalker.postcode) 
-      .input('id', result.recordset[0].id)
-      .query('INSERT INTO [dbo].[dogWalkers] (id, yourname, email, town, postcode) VALUES (@id, @yourname, @email, @town, @postcode);'); 
-    await addWalkerToDB(dogWalker);
-    return { body: 'Your information has been successful submitted!' };
+      .query('INSERT INTO [dbo].[dogWalkers] (yourname, email, town, postcode) VALUES (@yourname, @email, @town, @postcode);'); 
+    //await addWalkerToDB(dogWalker);
+    return { body: 'Your information has been successfully submitted!' };
   } catch (err) { 
     console.log(err); 
-    return { body: 'Your information has not been successful submitted, please try again' };
+    return { body: 'Your information has not been successfully submitted, please try again.' };
   } 
 }
 
