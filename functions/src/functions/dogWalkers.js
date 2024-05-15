@@ -31,7 +31,14 @@ app.http('dogWalkers', {
       const town = request.query.get('town') || await request.text() || 'No town';
       const postcode = request.query.get('postcode') || await request.text() || 'No postcode';
 
-      return { body: `Hello, ${name}!` };
+      const response = `Request recieved but not submitted into database, please try again.`
+
+      if (name || email || town || postcode)
+        {
+          const response = `Hello, ${name}!, response recieved and in database, thank you!`
+        }
+
+        return { body: response };
   }
 });
 
