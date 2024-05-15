@@ -28,6 +28,6 @@ def dogWalkersPython(req: func.HttpRequest, dogWalkerInfo: func.Out[func.SqlRow]
         return func.HttpResponse(f"Hello, {name}. You've been registered successfully!.")
     else:
         return func.HttpResponse(
-             f"An error occured, please try again!", {name},
+             "An error occured, please try again!",
              status_code=200
         )
