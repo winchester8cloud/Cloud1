@@ -6,7 +6,7 @@ import logging
 
 app = func.FunctionApp()
 
-@app.route(route="pythonDogWalkers", auth_level=func.AuthLevel.ANONYMOUS, methods=["POST"])
+@app.route(route="pythonDogWalkers", auth_level=func.AuthLevel.ANONYMOUS, methods=["GET","POST"])
 @app.generic_output_binding(arg_name="dogWalkerInfo", type="sql", CommandText="dbo.dogWalkers", ConnectionStringSetting="SqlConnectionString", data_type=DataType.STRING)
 def dogWalkersPython(req: func.HttpRequest, dogWalkerInfo: func.Out[func.SqlRow]) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
@@ -28,6 +28,6 @@ def dogWalkersPython(req: func.HttpRequest, dogWalkerInfo: func.Out[func.SqlRow]
         return func.HttpResponse(f"Hello, {name}. You've been registered successfully!.")
     else:
         return func.HttpResponse(
-             "An error occured, please try again!",
+             f"An error occured, please try again!", {name},
              status_code=200
         )
