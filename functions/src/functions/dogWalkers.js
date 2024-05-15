@@ -1,18 +1,19 @@
 const { app } = require('@azure/functions');
-const mssql = require('mssql');
-
-const config = {
-  server: 'scripts-waggly-server',
-  user: 'server-admin-waggly',
-  password: 'gjrs4t4nSSfw!!',
-  database: 'dogWalkers.sql',
-};
 
 app.http('dogWalkers', {
   methods: ['POST'],
   authLevel: 'anonymous', // Adjust based on your authentication needs
   handler: async (context, req) => {
     context.log('Http function processed request for url "${request.url}"');
+
+    const mssql = require('mssql');
+
+    const config = {
+      server: 'scripts-waggly-server',
+      user: 'server-admin-waggly',
+      password: 'gjrs4t4nSSfw!!',
+      database: 'dogWalkers.sql',
+    };
 
     if (req.method === 'POST') {
       // ... (same logic as before to retrieve form data from request body)
