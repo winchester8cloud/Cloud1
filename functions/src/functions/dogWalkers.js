@@ -21,48 +21,56 @@ const config = {
   }
 };
 
-const insertWalker = async (walker) => { 
-  try { 
-    const pool = await sql.connect(config); 
-    const result = await pool.request() 
-      .input('name', sql.NVarChar, walker.name) 
-      .input('email', sql.NVarChar, walker.email) 
-      .input('town', sql.NVarChar, walker.town) 
-      .input('postcode', sql.NVarChar, walker.postcode) 
-      .query('INSERT INTO [dbo].[dogWalkers] (name, email, town, postcode) VALUES (@name, @email, @town, @postcode);'); 
-    console.log("Inserted walker with ID: ", result.recordset[0].id); 
-  } catch (err) { 
-    console.log("Error inserting walker: ", err); 
-  } 
-} 
-
- 
-
 app.http('dogWalkers', {
   methods: ['GET', 'POST'],
   authLevel: 'anonymous',
-  handler: async (req, context) => {
+  handler: async (request, context) => {
     context.log(`Http function processed request for url "${request.url}"`);
 
-  const queryString = req.body; 
-  const params = new URLSearchParams(queryString); 
-  const name = params.get('name'); 
-  const email = params.get('email'); 
-  const town = params.get('town');
-  const postcode = params.get('postcode');  
+    if (request.method === 'POST') {
+      // Data form
+      const data = await request.text();
+
+      // Decode this
+      const formData = new URLSearchParams(data);
+
+      const yourname = formData.get('yourname') || 'No name supplied';
+      const email = formData.get('email') || 'No email supplied';
+      const town = formData.get('town') || 'No town supplied';
+      const postcode = formData.get('postcode') || 'No postcode supplied';
+
+      const response = await addWalkerToDB(dogWalker);
+
+      return { body: response };
+
+    } else {
+      // Handle GET requests differently if needed
+      return { body: 'This function expects a dog walker submission request.' };
+    }
+  }
+});
+
+const dogWalker = { 
+  yourname, 
+  email, 
+  town,
+  postcode 
+}; 
 
 
-  const dogWalker = { 
-
-    name, 
-    email, 
-    town,
-    postcode 
-  }; 
-
- 
-  await insertWalker(walker); 
-  context.res = { 
-    body: "Walker inserted." 
-  }; 
-}});
+const addWalkerToDB = async (dogWalker) => { 
+  try { 
+    const pool = await sql.connect(config); 
+    const result = await pool.request() 
+      .input('yourname', sql.NVarChar, dogWalker.yourname) 
+      .input('email', sql.NVarChar, dogWalker.email) 
+      .input('town', sql.NVarChar, dogWalker.town) 
+      .input('postcode', sql.NVarChar, dogWalker.postcode) 
+      .input('id', result.recordset[0].id)
+      .query('INSERT INTO [dbo].[dogWalkers] (id, yourname, email, town, postcode) VALUES (@id, @yourname, @email, @town, @postcode);'); 
+    return { body: 'Your information has been successfully submitted!' };
+  } catch (err) { 
+    return { body: 'Database error, no information submitted, please try again!' };
+    console.log(err); 
+  } 
+} 
