@@ -1,26 +1,7 @@
 const { app, output } = require('@azure/functions');
 const mssql = require('mssql');
 
-const config = {
-  server: 'admin-waggly.database.windows.net',
-  user: 'server-admin-waggly',
-  password: 'Wag881!!',
-  database: 'waggly',
-  pool: { 
-    max: 100, 
-    min: 0, 
-    idleTimeoutMillis: 50000 
-
-  }, 
-  authentication: {
-    type: 'default'
-  },
-  options: {
-      encrypt: true
-  }
-};
-
-const sqlConfig = { 
+const config = { 
   user: 'server-admin-waggly', 
   password: 'Wag881!!', 
   database: 'waggly', 
@@ -65,7 +46,6 @@ app.http('dogWalkers', {
       // Database interaction (replace with your actual logic)
       //const databaseResponse = await addWalkerToDatabase(name, email, town, postcode);
       const databaseResponse = await testConnection();
-      
 
       if (databaseResponse.success) {
         return { body: `Hello, ${name}!, information submitted successfully!` };

@@ -1,10 +1,12 @@
 {
-    "azureFunctions.deploySubpath": "functions",
+    "azureFunctions.deploySubpath": "pythonFunctions",
     "azureFunctions.postDeployTask": "npm install (functions)",
-    "azureFunctions.projectLanguage": "JavaScript",
+    "azureFunctions.projectLanguage": "Python",
     "azureFunctions.projectRuntime": "~4",
     "debug.internalConsoleOptions": "neverOpen",
-    "azureFunctions.projectLanguageModel": 4,
+    "azureFunctions.projectLanguageModel": 2,
     "azureFunctions.preDeployTask": "npm prune (functions)",
-    "dataworkspace.excludedProjects": []
+    "dataworkspace.excludedProjects": [],
+    "azureFunctions.scmDoBuildDuringDeployment": true,
+    "azureFunctions.pythonVenv": ".venv"
 }
