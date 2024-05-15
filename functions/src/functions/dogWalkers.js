@@ -12,13 +12,18 @@ const config = {
     min: 0, 
     idleTimeoutMillis: 50000 
 
-  } 
+  }, 
+  authentication: {
+    type: 'default'
+  },
+  options: {
+      encrypt: true
+  }
 };
 
 app.http('dogWalkers', {
   methods: ['GET', 'POST'],
   authLevel: 'anonymous',
-  extraOutputs: [sendToSql],
   handler: async (request, context) => {
     context.log(`Http function processed request for url "${request.url}"`);
 
@@ -52,8 +57,8 @@ app.http('dogWalkers', {
  
 const addWalkerToDB = async (dogWalker) => { 
   try { 
-    const pool = await sql.connect(config); 
-    const result = await pool.request() 
+    var pool = await sql.connect(config); 
+    var result = await pool.request() 
       .input('name', sql.NVarChar, dogWalker.name) 
       .input('email', sql.NVarChar, dogWalker.email) 
       .input('town', sql.NVarChar, dogWalker.town) 
