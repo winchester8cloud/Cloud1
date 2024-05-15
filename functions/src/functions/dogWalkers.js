@@ -39,7 +39,6 @@ app.http('dogWalkers', {
         postcode 
       }; 
       
-      await addWalkerToDB(dogWalker);
       const addWalkerToDB = async (dogWalker) => { 
         try { 
           const pool = await sql.connect(config); 
@@ -55,6 +54,8 @@ app.http('dogWalkers', {
           console.log(err); 
         } 
       }
+
+      await addWalkerToDB(dogWalker);
 
       return { body: 'Your information has been successful submitted!' };
 
