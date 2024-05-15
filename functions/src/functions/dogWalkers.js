@@ -1,4 +1,13 @@
 const { app } = require('@azure/functions');
+const mssql = require('mssql');
+
+const config = {
+  // Replace with your actual SQL connection string details retrieved securely
+  server: 'waggly-assignment-server.database.windows.net',
+  user: 'admin-waggly',
+  password: 'gjrs4t4nSSfw!!',
+  database: 'waggly-server',
+};
 
 app.http('dogWalkers', {
   methods: ['GET', 'POST'],
@@ -39,5 +48,5 @@ app.http('dogWalkers', {
   }
 });
 
-const mssql = require('mssql');
+
 
