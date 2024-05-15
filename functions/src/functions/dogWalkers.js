@@ -21,55 +21,46 @@ const config = {
   }
 };
 
-app.http('dogWalkers', {
-  methods: ['GET', 'POST'],
-  authLevel: 'anonymous',
-  handler: async (request, context) => {
-      context.log(`Http function processed request for url "${request.url}"`);
+const { app } = require('@azure/functions');
 
-      if (request.method === 'POST') {
-          // Data form
-          const data = await request.text();
-    
-          // Decode this
-          const formData = new URLSearchParams(data);
-    
-          const yourname = formData.get('yourname') || 'No name supplied';
-          const email = formData.get('email') || 'No email supplied';
-          const town = formData.get('town') || 'No town supplied';
-          const postcode = formData.get('postcode') || 'No postcode supplied';
-    
-          const response = await addWalkerToDB(dogWalker);
-    
-          return { body: response };
-    
-        } else {
-          // Handle GET requests differently if needed
-          return { body: 'This function expects a dog walker submission request.' };
-        }
-  }
+app.http('dogWalkers', {
+    methods: ['GET', 'POST'],
+    authLevel: 'anonymous',
+    handler: async (request, context) => {
+        context.log(`Http function processed request for url "${request.url}"`);
+
+        if (req.method === 'POST') {
+          const body = req.body;
+      
+          if (body) {
+            try {
+              const { name, email, town, postcode } = body;
+      
+              // You might want to add data validation here
+      
+              // Replace with your actual database connection logic (e.g., using a SQL library)
+              const response = await addWalkerToDatabase(name, email, town, postcode);
+              return { response };}
+            catch {
+              return {"Database function didn't run."}
+            }
+          }
+
+    }
 });
 
-const dogWalker = { 
-  yourname, 
-  email, 
-  town,
-  postcode 
-}; 
-
-
-const addWalkerToDB = async (dogWalker) => { 
+const addWalkerToDatabase = async (name, email, town, postcode) => { 
   try { 
     const pool = await sql.connect(config); 
     const result = await pool.request() 
-      .input('yourname', sql.NVarChar, dogWalker.yourname) 
-      .input('email', sql.NVarChar, dogWalker.email) 
-      .input('town', sql.NVarChar, dogWalker.town) 
-      .input('postcode', sql.NVarChar, dogWalker.postcode) 
-      .query('INSERT INTO [dbo].[dogWalkers] (yourname, email, town, postcode) VALUES (@yourname, @email, @town, @postcode);'); 
+      .input('name', sql.NVarChar, name) 
+      .input('email', sql.NVarChar, email) 
+      .input('town', sql.NVarChar, town) 
+      .input('postcode', sql.NVarChar, postcode) 
+      .query('INSERT INTO [dbo].[dogWalkers] (name, email, town, postcode) VALUES (name, @email, @town, @postcode);'); 
     return { body: 'Your information has been successfully submitted!' };
   } catch (err) { 
-    return { body: 'Database error, no information submitted, please try again!' };
     console.log(err); 
+    return { body: 'Your information has not been successfully submitted, please try again!' };
   } 
-} 
+}

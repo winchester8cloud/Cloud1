@@ -19,18 +19,20 @@
       <th style="text-align: center; font-family:verdana;">Dog owners</th>
     </tr>
     <tr>
-        <form method="POST" id="dogWalker" action="https://cloud-function-trigger.azurewebsites.net/api/dogWalkers?">
-      <td><label style="text-align: center; font-family:verdana;">Your name:</label> 
-        <input type="text" name="name" id="name" placeholder="Your name here..."> <br>
-        <label style="text-align: center; font-family:verdana;">Email:</label> 
-        <input type="text" name="email" id="email" placeholder="Your email here..."> <br>
-        <label style="text-align: center; font-family:verdana;">Town:</label> 
-        <input type="text" name="town" id="town" placeholder="Your town here..."> <br>
-        <label style="text-align: center; font-family:verdana;">Post code:</label> 
-        <input type="text" name="postcode" id="postcode" placeholder="Your post code here..."> <br> <br> <br>
+        <form method="POST" id="dogWalkerForm" action="https://cloud-function-trigger.azurewebsites.net/api/dogWalkers?">
+      <td><label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <label for="town">Town:</label>
+        <input type="text" id="town" name="town" required>
+        <label for="postcode">Postcode:</label>
+        <input type="text" id="postcode" name="postcode" required> <br> <br> <br>
         <button type="clear" style="text-align: center; font-family:verdana;">Clear</button> <br> <br>
         <button type="submit" style="text-align: center; font-family:verdana;" class="registerButtonDogWalker">Register</button>
     </form>
+    <p id="message"></p>
+
     <text style="text-align: center; font-family:verdana;" id="message-back"></text>
     <td></td>
         <form method="POST" id="dogOwner" action="https://cloud-function-trigger.azurewebsites.net/api/dogWalkers?">
@@ -49,6 +51,31 @@
     </form>
     </tr>
   </table>
+
+  <script>
+    const form = document.getElementById('dogWalkerForm');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const town = document.getElementById('town').value;
+      const postcode = document.getElementById('postcode').value;
+
+      const response = await fetch('https://cloud-function-trigger.azurewebsites.net/api/dogwalkers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, email, town, postcode })
+      });
+
+      const data = await response.json();
+      message.textContent = data.message;
+    });
+  </script>
 
 </body>
 </html>
