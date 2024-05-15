@@ -63,7 +63,15 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({ name: name, email: email, town: town, postcode: postcode })
-        })})
+        })
+        .then(dog_form.reset())
+      .then(response => response.text())
+      .then(data => {
+        dog_response.textContent = `${data}`;
+      })
+      .catch(error => {
+        dog_response.textContent = `${error.message}`;
+      })})
   </script>
 </body>
 
