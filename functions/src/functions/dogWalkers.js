@@ -3,10 +3,10 @@ const mssql = require('mssql');
 
 const config = {
   // Replace with your actual SQL connection string details retrieved securely
-  server: 'waggly-assignment-server.database.windows.net',
-  user: 'admin-waggly',
-  password: 'gjrs4t4nSSfw!!',
-  database: 'waggly-server',
+  server: 'admin-waggly.database.windows.net',
+  user: 'server-admin-waggly',
+  password: 'Wag881!!',
+  database: 'waggly',
 };
 
 app.http('dogWalkers', {
