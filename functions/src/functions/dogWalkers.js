@@ -21,8 +21,6 @@ const config = {
   }
 };
 
-const { app } = require('@azure/functions');
-
 app.http('dogWalkers', {
     methods: ['GET', 'POST'],
     authLevel: 'anonymous',
