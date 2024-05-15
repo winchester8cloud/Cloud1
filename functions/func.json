@@ -1,18 +1,11 @@
 {
-  "bindings": [
-    {
-      "name": "req",
-      "type": "httpTrigger",
-      "direction": "in",
-      "methods": ["post"],
-      "authLevel": "anonymous"
-    },
-    {
-      "name": "dogWalker",
-      "type": "httpOut",
-      "direction": "out",
-      "authLevel": "anonymous",
-      "url": "http://your-database-connection-string.com/addwalker"
+  "disabledFunctions": [],
+  "scriptRoot": ".",
+  "functions": {
+    "dogWalkers": {
+      "script": "dogWalkers/dogWalkers.js",
+      "bindings": [
+      ]
     }
-  ]
+  }
 }
