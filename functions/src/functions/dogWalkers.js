@@ -1,26 +1,14 @@
-const { app } = require('@azure/functions');
-const mssql = require('mssql');
+const { app, output } = require('@azure/functions');
 const crypto = require('crypto');
 
-const config = {
-  server: 'admin-waggly.database.windows.net',
-  user: 'server-admin-waggly',
-  password: 'Wag881!!',
-  database: 'waggly',
-  pool: { 
-    max: 100, 
-    min: 0, 
-    idleTimeoutMillis: 50000 
+const sendToSql = output.sql({
+  commandText: 'dbo.ToDo',
+  connectionStringSetting: 'SqlConnectionString',
+});
 
-  } 
-};
-
-
-
-app.http('dogWalkers', {
+app.http('HttpExample', {
   methods: ['GET', 'POST'],
-  authLevel: 'anonymous',
-  extraOutputs: [sendtoSql],
+  extraOutputs: [sendToSql],
   handler: async (request, context) => {
     context.log(`Http function processed request for url "${request.url}"`);
 
