@@ -21,6 +21,30 @@ const config = {
   }
 };
 
+const dogWalker = { 
+  yourname, 
+  email, 
+  town,
+  postcode 
+}; 
+
+
+const addWalkerToDB = async (dogWalker) => { 
+  try { 
+    const pool = await sql.connect(config); 
+    const result = await pool.request() 
+      .input('yourname', sql.NVarChar, dogWalker.yourname) 
+      .input('email', sql.NVarChar, dogWalker.email) 
+      .input('town', sql.NVarChar, dogWalker.town) 
+      .input('postcode', sql.NVarChar, dogWalker.postcode) 
+      .query('INSERT INTO [dbo].[dogWalkers] (yourname, email, town, postcode) VALUES (@yourname, @email, @town, @postcode);'); 
+    return { body: 'Your information has been successfully submitted!' };
+  } catch (err) { 
+    return { body: 'Database error, no information submitted, please try again!' };
+    console.log(err); 
+  } 
+} 
+
 app.http('dogWalkers', {
   methods: ['GET', 'POST'],
   authLevel: 'anonymous',
@@ -50,26 +74,4 @@ app.http('dogWalkers', {
   }
 });
 
-const dogWalker = { 
-  yourname, 
-  email, 
-  town,
-  postcode 
-}; 
 
-
-const addWalkerToDB = async (dogWalker) => { 
-  try { 
-    const pool = await sql.connect(config); 
-    const result = await pool.request() 
-      .input('yourname', sql.NVarChar, dogWalker.yourname) 
-      .input('email', sql.NVarChar, dogWalker.email) 
-      .input('town', sql.NVarChar, dogWalker.town) 
-      .input('postcode', sql.NVarChar, dogWalker.postcode) 
-      .query('INSERT INTO [dbo].[dogWalkers] (yourname, email, town, postcode) VALUES (@yourname, @email, @town, @postcode);'); 
-    return { body: 'Your information has been successfully submitted!' };
-  } catch (err) { 
-    return { body: 'Database error, no information submitted, please try again!' };
-    console.log(err); 
-  } 
-} 
