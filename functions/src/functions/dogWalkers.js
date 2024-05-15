@@ -29,17 +29,17 @@ app.http('dogWalkers', {
         if (req.method === 'POST') {
           const infoWalker = req.body;
       
-          if (infoWalker) {
-            try {
+          //if (infoWalker) {
+            //try {
               // To DB
-              const response = await addWalkerToDatabase(infoWalker);
-              return { response };}
-            catch {
-              return {body: "Database function didn't run."};
-            }
-          }
+              //const response = await addWalkerToDatabase(infoWalker);
+              //return { response };}
+            //catch {
+              //return {body: "Database function didn't run."};
+            //}
+          //}
 
-          return {body: "No information passed."};
+          return {body: `No information passed, ${infoWalker.name}!`};
     }
 }});
 
@@ -54,7 +54,6 @@ const addWalkerToDatabase = async (infoWalker) => {
       .query('INSERT INTO [dbo].[dogWalkers] (name, email, town, postcode) VALUES (name, @email, @town, @postcode);'); 
     return { body: 'Your information has been successfully submitted!' };
   } catch (err) { 
-    console.log(err); 
     return { body: 'Your information has not been successfully submitted, please try again!' };
   } 
 }
