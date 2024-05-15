@@ -6,7 +6,7 @@ const sendToSql = output.sql({
   connectionStringSetting: 'SqlConnectionString',
 });
 
-app.http('HttpExample', {
+app.http('dogWalkers', {
   methods: ['GET', 'POST'],
   extraOutputs: [sendToSql],
   handler: async (request, context) => {
