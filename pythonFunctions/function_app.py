@@ -1,10 +1,10 @@
 import azure.functions as func
+from func import ConnectionStringConfig
 from azure.functions.decorators.core import DataType
 import json
 import uuid
 import logging
-from sqlalchemy import create_engine
-from func import ConnectionStringConfig
+
 
 app = func.FunctionApp()
 
