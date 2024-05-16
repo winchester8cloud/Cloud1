@@ -1,10 +1,8 @@
 import azure.functions as func
-from func import ConnectionStringConfig
 from azure.functions.decorators.core import DataType
 import json
 import uuid
 import logging
-
 
 app = func.FunctionApp()
 
@@ -20,17 +18,6 @@ def dogWalkersPython(req: func.HttpRequest, dogWalkerInfo: func.Out[func.SqlRow]
 
     if name:
         try:
-            # Retrieve connection string from Azure App Settings
-            sql_connection_string = ConnectionStringConfig().get_connection_string("SqlConnectionString")
-            engine = create_engine(sql_connection_string)
-
-      # Execute insert query with SQLAlchemy (parameterized for security)
-            engine.execute(
-            db.dogWalkers.insert(),
-            name=name,
-            email=email,
-            town=town,
-            postcode=postcode)
             dogWalkerInfo.set(func.SqlRow({"name": name, "email": email, "town": town, "postcode": postcode}))
             return func.HttpResponse(f"Hello, {name}. You've been registered successfully!.")
         except Exception as e:
