@@ -3,6 +3,7 @@ from azure.functions.decorators.core import DataType
 import json
 import uuid
 import logging
+import pyodbc
 
 app = func.FunctionApp()
 
@@ -15,6 +16,19 @@ def dogWalkersPython(req: func.HttpRequest, dogWalkerInfo: func.Out[func.SqlRow]
     email = req.form.get('email')
     town = req.form.get('town')
     postcode = req.form.get('postcode')
+
+    SERVER = 'admin-waggly.database.windows.net'
+    DATABASE = 'waggly'
+    USERNAME = 'server-admin-waggly'
+    PASSWORD = 'Wag881!!'
+    connectionString = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={SERVER};DATABASE={DATABASE};UID={USERNAME};PWD={PASSWORD}'
+    conn = pyodbc.connect(connectionString)
+    SQL_QUERY = """
+                INSERT INTO dbo.dogWalkers (name, email, town, postcode)
+                VALUES ('name', 'email', 'town', 'postcode');
+                """
+    cursor = conn.cursor()
+    cursor.execute(SQL_QUERY)
 
     if name:
         try:
