@@ -11,10 +11,10 @@ app = func.FunctionApp()
 def dogWalkersPython(req: func.HttpRequest, dogWalkerInfo: func.Out[func.SqlRow]) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
-    name = req.params.get('name')
-    email = req.params.get('email')
-    town = req.params.get('town')
-    postcode = req.params.get('postcode')
+    name = req.form.get('name')
+    email = req.form.get('email')
+    town = req.form.get('town')
+    postcode = req.form.get('postcode')
     if not name:
         try:
             req_body = req.get_json()
