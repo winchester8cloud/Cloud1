@@ -17,25 +17,26 @@ def dogWalkersPython(req: func.HttpRequest, dogWalkerInfo: func.Out[func.SqlRow]
     town = req.form.get('town')
     postcode = req.form.get('postcode')
 
-    SERVER = 'admin-waggly.database.windows.net'
-    DATABASE = 'waggly'
-    USERNAME = 'server-admin-waggly'
-    PASSWORD = 'Wag881!!'
-    connectionString = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={SERVER};DATABASE={DATABASE};UID={USERNAME};PWD={PASSWORD}'
-    conn = pyodbc.connect(connectionString)
-    SQL_QUERY = """
-                INSERT INTO dbo.dogWalkers (name, email, town, postcode)
-                VALUES ('name', 'email', 'town', 'postcode');
-                """
-    cursor = conn.cursor()
-    cursor.execute(SQL_QUERY)
-
     if name:
-        try:
-            dogWalkerInfo.set(func.SqlRow({"name": name, "email": email, "town": town, "postcode": postcode}))
-            return func.HttpResponse(f"Hello, {name}. You've been registered successfully!")
-        except:
-            return func.HttpResponse(f"Hello, {name}. Please try again, your information wasn't passed to our database!")
+        SERVER = 'admin-waggly.database.windows.net'
+        DATABASE = 'waggly'
+        USERNAME = 'server-admin-waggly'
+        PASSWORD = 'Wag881!!'
+        connectionString = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={SERVER};DATABASE={DATABASE};UID={USERNAME};PWD={PASSWORD}'
+        conn = pyodbc.connect(connectionString)
+        SQL_QUERY = """
+                INSERT INTO dbo.dogWalkers (name, email, town, postcode)
+                VALUES (?,?,?,?);
+                """
+        cursor = conn.cursor()
+        cursor.execute(SQL_QUERY, (name, email, town, postcode))
+        return func.HttpResponse(f"Hello, {name}. You've been registered successfully!")
+        #try:
+        #    dogWalkerInfo.set(func.SqlRow({"name": name, "email": email, "town": town, "postcode": postcode}))
+        #    return func.HttpResponse(f"Hello, {name}. You've been registered successfully!")
+        
+        #except:
+            #return func.HttpResponse(f"Hello, {name}. Please try again, your information wasn't passed to our database!")
     else:
         return func.HttpResponse(
              "An error occured, please try again!",
