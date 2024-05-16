@@ -18,7 +18,9 @@ def dogWalkersPython(req: func.HttpRequest, dogWalkerInfo: func.Out[func.SqlRow]
 
     if name:
         try:
-            dogWalkerInfo.set(func.SqlRow({"name": name, "email": email, "town": town, "postcode": postcode}))
+            #dogWalkerInfo.set(func.SqlRow({"name": name, "email": email, "town": town, "postcode": postcode}))
+            rows = func.SqlRowList({"name": name, "email": email, "town": town, "postcode": postcode})
+            dogWalkerInfo.set(rows)
             return func.HttpResponse(f"Hello, {name}. You've been registered successfully!.")
         except Exception as e:
             return func.HttpResponse(f"Hello, {name}. Please try again, your information wasn't passed to our database!")
