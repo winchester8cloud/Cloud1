@@ -13,7 +13,7 @@ There are three main components to this repo:
 The index.html file contains the code for the website. It's hosted using Azure Static Web Apps on the site domain above. This contains two forms - one for dog walker registration and one for dog owner registration.
 
 ## Azure Function
-The functions.py script contains the Azure functions that ingests the form data and injects this into the SQL server. It is a serverless, RESTful API backend.
+The functions.py script contains the Azure functions that ingests the form data and injects this into the SQL server. It is a serverless, RESTful API backend and can be found here: https://github.com/winchester8cloud/Cloud1/blob/main/pythonFunctions/function_app.py.
 
 ## SQL database
-The SQL database contains two tables - dogWalkers and dogOwners, which can be setup by running the scripts in this repo. It is hosted by Azure and auto-pauses after 1 hour of use. It is a _general purpose _ and _serverless_ tier SQL database. 
+The SQL database contains two tables - dogWalkers and dogOwners, which can be setup by running the scripts in this folder: https://github.com/winchester8cloud/Cloud1/tree/main/waggly. It is hosted by Azure and auto-pauses after 1 hour of use. It is a _general purpose _ and _serverless_ tier SQL database. 
