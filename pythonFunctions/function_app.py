@@ -9,8 +9,7 @@ app = func.FunctionApp()
 
 @app.function_name(name="pythonDogWalkers")
 @app.route(route="pythonDogWalkers", auth_level=func.AuthLevel.ANONYMOUS, methods=["GET","POST"])
-@app.generic_output_binding(arg_name="dogWalkerInfo", type="sql", CommandText="dbo.dogWalkers", ConnectionStringSetting="Server=tcp:admin-waggly.database.windows.net,1433;Initial Catalog=waggly;Persist Security Info=False;User ID=server-admin-waggly;Password=Wag881!!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;", data_type=DataType.STRING)
-def dogWalkersPython(req: func.HttpRequest, dogWalkerInfo: func.Out[func.SqlRow]) -> func.HttpResponse:
+def dogWalkersPython(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
     name = req.form.get('name')
@@ -44,7 +43,7 @@ def dogOwners(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
     name = req.form.get('name')
-    dogname = req.form.get('dogname')
+    dogsname = req.form.get('dogsname')
     email = req.form.get('email')
     town = req.form.get('town')
     postcode = req.form.get('postcode')
@@ -62,7 +61,7 @@ def dogOwners(req: func.HttpRequest) -> func.HttpResponse:
                 """
         cursor = conn.cursor()
         cursor.execute(SQL_QUERY, (name, email, town, postcode))
-        return func.HttpResponse(f"Hello, {name} and {dogname}. You've been registered successfully!")
+        return func.HttpResponse(f"Hello, {name} and {dogsname}. You've been registered successfully!")
     else:
         return func.HttpResponse(
              "An error occured, please try again!",
