@@ -42,11 +42,11 @@ def dogWalkersPython(req: func.HttpRequest) -> func.HttpResponse:
 def dogOwners(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
-    name = req.form.get('name')
-    dogsname = req.form.get('dogsname')
-    email = req.form.get('email')
-    town = req.form.get('town')
-    postcode = req.form.get('postcode')
+    name = req.form.get('name1')
+    dogsname = req.form.get('dogsname1')
+    email = req.form.get('email1')
+    town = req.form.get('town1')
+    postcode = req.form.get('postcode1')
 
     if name:
         SERVER = 'admin-waggly.database.windows.net'
