@@ -48,25 +48,23 @@ def dogOwners(req: func.HttpRequest) -> func.HttpResponse:
     town = req.form.get('town1')
     postcode = req.form.get('postcode1')
 
-    return func.HttpResponse(f"Hello, {name} and {dogsname}. You've been registered successfully!")
-
-    #if name:
-    #    SERVER = 'admin-waggly.database.windows.net'
-    #    DATABASE = 'waggly'
-    #    USERNAME = 'server-admin-waggly'
-    #    PASSWORD = 'Wag881!!'
-    #    connectionString = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={SERVER};DATABASE={DATABASE};UID={USERNAME};PWD={PASSWORD}'
-    #    conn = pyodbc.connect(connectionString)
-    #    SQL_QUERY = """
-    #            INSERT INTO dbo.dogOwners (name, dogsname, email, town, postcode)
-    #            VALUES (?,?,?,?,?);
-    #            """
-    #    cursor = conn.cursor()
-    #    cursor.execute(SQL_QUERY, (name, dogsname, email, town, postcode))
-    #    return func.HttpResponse(f"Hello, {name} and {dogsname}. You've been registered successfully!")
-    #else:
-    #    return func.HttpResponse(
-    #         "An error occured, please try again!",
-    #         status_code=200
-    #    )
+    if name:
+        SERVER = 'admin-waggly.database.windows.net'
+        DATABASE = 'waggly'
+        USERNAME = 'server-admin-waggly'
+        PASSWORD = 'Wag881!!'
+        connectionString = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={SERVER};DATABASE={DATABASE};UID={USERNAME};PWD={PASSWORD}'
+        conn = pyodbc.connect(connectionString)
+        SQL_QUERY = """
+                INSERT INTO dbo.dogOwners (name, dogname, email, town, postcode)
+                VALUES (?,?,?,?,?);
+                """
+        cursor = conn.cursor()
+        cursor.execute(SQL_QUERY, (name, dogsname, email, town, postcode))
+        return func.HttpResponse(f"Hello, {name} and {dogsname}. You've been registered successfully!")
+    else:
+        return func.HttpResponse(
+             "An error occured, please try again!",
+             status_code=200
+        )
     
