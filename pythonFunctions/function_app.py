@@ -1,9 +1,13 @@
 import azure.functions as func
 from azure.functions.decorators.core import DataType
-import json
-import uuid
 import logging
 import pyodbc
+import os
+
+SERVER = os.environ.get('SERVER_NAME')
+DATABASE = os.environ.get('DATABASE_NAME')
+USERNAME = os.environ.get('DATABASE_USERNAME')
+PASSWORD = os.environ.get('DATABASE_PASSWORD')
 
 app = func.FunctionApp()
 
@@ -18,10 +22,10 @@ def dogWalkersPython(req: func.HttpRequest) -> func.HttpResponse:
     postcode = req.form.get('postcode')
 
     if name:
-        SERVER = 'admin-waggly.database.windows.net'
-        DATABASE = 'waggly'
-        USERNAME = 'server-admin-waggly'
-        PASSWORD = 'Wag881!!'
+        #SERVER = 'admin-waggly.database.windows.net'
+        #DATABASE = 'waggly'
+        #USERNAME = 'server-admin-waggly'
+        #PASSWORD = 'Wag881!!'
         connectionString = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={SERVER};DATABASE={DATABASE};UID={USERNAME};PWD={PASSWORD}'
         conn = pyodbc.connect(connectionString)
         SQL_QUERY = """
@@ -49,10 +53,10 @@ def dogOwners(req: func.HttpRequest) -> func.HttpResponse:
     postcode = req.form.get('postcode1')
 
     if name:
-        SERVER = 'admin-waggly.database.windows.net'
-        DATABASE = 'waggly'
-        USERNAME = 'server-admin-waggly'
-        PASSWORD = 'Wag881!!'
+        #SERVER = 'admin-waggly.database.windows.net'
+        #DATABASE = 'waggly'
+        #USERNAME = 'server-admin-waggly'
+        #PASSWORD = 'Wag881!!'
         connectionString = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={SERVER};DATABASE={DATABASE};UID={USERNAME};PWD={PASSWORD}'
         conn = pyodbc.connect(connectionString)
         SQL_QUERY = """
