@@ -36,3 +36,4 @@ def dogWalkersPython(req: func.HttpRequest, dogWalkerInfo: func.Out[func.SqlRow]
              "An error occured, please try again!",
              status_code=200
         )
+    
