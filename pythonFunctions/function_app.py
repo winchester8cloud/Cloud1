@@ -40,7 +40,8 @@ def dogWalkersPython(req: func.HttpRequest, dogWalkerInfo: func.Out[func.SqlRow]
     
 @app.function_name(name="dogOwners")
 @app.route(route="dogOwners", auth_level=func.AuthLevel.ANONYMOUS, methods=["GET","POST"])
-def dogOwners(req: func.HttpRequest) -> func.HttpResponse:
+@app.generic_output_binding(arg_name="dogOwnersInfo", type="sql", CommandText="dbo.dogOwners", ConnectionStringSetting="Server=tcp:admin-waggly.database.windows.net,1433;Initial Catalog=waggly;Persist Security Info=False;User ID=server-admin-waggly;Password=Wag881!!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;", data_type=DataType.STRING)
+def dogOwners(req: func.HttpRequest, dogWOwnersInfo: func.Out[func.SqlRow]) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
     name = req.form.get('name')
@@ -57,7 +58,7 @@ def dogOwners(req: func.HttpRequest) -> func.HttpResponse:
         connectionString = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={SERVER};DATABASE={DATABASE};UID={USERNAME};PWD={PASSWORD}'
         conn = pyodbc.connect(connectionString)
         SQL_QUERY = """
-                INSERT INTO dbo.dogWalkers (name, dogname, email, town, postcode)
+                INSERT INTO dbo.dogOwners (name, dogname, email, town, postcode)
                 VALUES (?,?,?,?,?);
                 """
         cursor = conn.cursor()
