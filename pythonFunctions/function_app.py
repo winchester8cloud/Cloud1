@@ -25,17 +25,8 @@ def dogWalkersPython(req: func.HttpRequest, dogWalkerInfo: func.Out[func.SqlRow]
         connectionString = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={SERVER};DATABASE={DATABASE};UID={USERNAME};PWD={PASSWORD}'
         conn = pyodbc.connect(connectionString)
         SQL_QUERY = """
-                USE [waggly]
-                GO
-
-                INSERT INTO [dbo].[dogWalkers]
-                        ([NAME]
-                        ,[EMAIL]
-                        ,[TOWN]
-                        ,[POSTCODE])
-                    VALUES
-                        (?, ?, ?, ?)
-                GO
+                INSERT INTO dbo.dogWalkers (name, email, town, postcode)
+                VALUES (?,?,?,?);
                 """
         cursor = conn.cursor()
         cursor.execute(SQL_QUERY, (name, email, town, postcode))
