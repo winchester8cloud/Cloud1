@@ -56,11 +56,11 @@ def dogOwners(req: func.HttpRequest) -> func.HttpResponse:
         connectionString = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={SERVER};DATABASE={DATABASE};UID={USERNAME};PWD={PASSWORD}'
         conn = pyodbc.connect(connectionString)
         SQL_QUERY = """
-                INSERT INTO dbo.dogOwners (name, dogname, email, town, postcode)
+                INSERT INTO dbo.dogOwners (name, dogsname, email, town, postcode)
                 VALUES (?,?,?,?,?);
                 """
         cursor = conn.cursor()
-        cursor.execute(SQL_QUERY, (name, email, town, postcode))
+        cursor.execute(SQL_QUERY, (name, dogsname, email, town, postcode))
         return func.HttpResponse(f"Hello, {name} and {dogsname}. You've been registered successfully!")
     else:
         return func.HttpResponse(
