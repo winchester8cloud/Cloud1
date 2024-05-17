@@ -40,8 +40,7 @@ def dogWalkersPython(req: func.HttpRequest, dogWalkerInfo: func.Out[func.SqlRow]
     
 @app.function_name(name="dogOwners")
 @app.route(route="dogOwners", auth_level=func.AuthLevel.ANONYMOUS, methods=["GET","POST"])
-@app.generic_output_binding(arg_name="dogOwnersInfo", type="sql", CommandText="dbo.dogOwners", ConnectionStringSetting="Server=tcp:admin-waggly.database.windows.net,1433;Initial Catalog=waggly;Persist Security Info=False;User ID=server-admin-waggly;Password=Wag881!!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;", data_type=DataType.STRING)
-def dogOwners(req: func.HttpRequest, dogWOwnersInfo: func.Out[func.SqlRow]) -> func.HttpResponse:
+def dogOwners(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
     name = req.form.get('name')
