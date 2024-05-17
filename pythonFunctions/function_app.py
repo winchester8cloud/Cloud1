@@ -39,7 +39,7 @@ def dogWalkersPython(req: func.HttpRequest, dogWalkerInfo: func.Out[func.SqlRow]
         )
     
 @app.function_name(name="dogOwners")
-@app.route(route="dogOwners", auth_level=func.AuthLevel.FUNCTION)
+@app.route(route="dogOwners", auth_level=func.AuthLevel.ANONYMOUS, methods=["GET","POST"])
 def dogOwners(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
